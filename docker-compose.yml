@@ -4,6 +4,10 @@ services:
   nginx:
     build:
       context: .
+    container_name: dng
+    expose: 
+      - 80/tcp
+#      - ${EXTERNAL_HTTP_PORT}/tcp
     ports:
       - ${EXTERNAL_HTTP_PORT}:80
       - ${EXTERNAL_SSH_PORT}:22
@@ -11,3 +15,17 @@ services:
       SSH_AUTHORIZED_KEY: ${SSH_AUTHORIZED_KEY}
     stdin_open: true
     tty: true
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-default"
+      - "traefik.http.routers.dng.entrypoints=websecure"
+      - "traefik.http.routers.dng.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.dng.tls=true"
+      - "traefik.http.routers.dng.tls.certresolver=production"
+      - "traefik.http.services.dng.loadbalancer.server.port=80"
+
+networks:
+  default:
+    name: traefik-default
+    external: true
