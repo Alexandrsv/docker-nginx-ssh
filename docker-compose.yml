@@ -7,7 +7,7 @@ services:
     container_name: dng
     expose: 
       - 80/tcp
-#      - ${EXTERNAL_HTTP_PORT}/tcp
+      - ${EXTERNAL_SSH_PORT}/tcp
     ports:
       - ${EXTERNAL_HTTP_PORT}:80
       - ${EXTERNAL_SSH_PORT}:22
